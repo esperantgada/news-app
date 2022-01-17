@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,7 +44,7 @@ class BreakingNewsFragment : Fragment() {
          * But if it's still in Loading state, show progress Bar
          * Else , show the progress Bar with an error message
          */
-        viewModel.news.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.news.observe(viewLifecycleOwner, { response ->
             when(response){
                 is Resource.Success ->{
                     hideProgressBar()
@@ -52,9 +53,10 @@ class BreakingNewsFragment : Fragment() {
                     }
                 }
                 is Resource.Error ->{
-                    showProgressBar()
+                    hideProgressBar()
                     response.responseMessage?.let { message ->
-                        Log.e(TAG, "An error occurred $message")
+                        Toast.makeText(activity, "An error occurred $message",
+                            Toast.LENGTH_LONG).show()
                     }
                 }
                 is Resource.Loading ->{
